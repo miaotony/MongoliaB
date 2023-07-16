@@ -36,11 +36,22 @@ def crawl():
 def action_success(resp, time_now):
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(resp["data"]["sale_flag_number"])
-    print(resp["data"]["screen_list"])
+    screen_list = resp["data"]["screen_list"]
+    # print(screen_list)
+
+    # parse detailed ticket info
+    desc = ""
+    for screen in screen_list:
+        day_name = screen["name"]
+        if screen["clickable"] == True:
+            for ticket in screen["ticket_list"]:
+                if ticket['clickable'] == True:
+                    desc += f"{ticket['screen_name']}_{ticket['desc']}: {ticket['num']}\n"
+    print(desc)
     with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
         f.write(
-            f'{time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n')
-        f.write(f'{resp["data"]["screen_list"]}\n')
+            f'{time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
+        f.write(f'{desc}\n')
 
     global last_success_time
     if time_now - last_success_time > datetime.timedelta(seconds=10):
@@ -48,9 +59,8 @@ def action_success(resp, time_now):
         desp = f"""
 *有票啦！*
 {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}
-```
-{resp["data"]["screen_list"][2]}
-```
+
+{desc}
 """.strip()
         telegram_push("【MongoliaB】", desp)
 
