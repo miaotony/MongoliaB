@@ -46,8 +46,9 @@ def action_success(resp, time_now):
         if screen["clickable"] == True:
             for ticket in screen["ticket_list"]:
                 if ticket['clickable'] == True:
-                    desc += f"{ticket['screen_name']}_{ticket['desc']}: {ticket['num']}\n"
+                    desc += f"{ticket['screen_name']}-{ticket['desc']}: {ticket['num']}\n"
     print(desc)
+    
     with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
         f.write(
             f'{time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
