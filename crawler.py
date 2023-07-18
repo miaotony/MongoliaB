@@ -13,8 +13,7 @@ import random
 last_success_time = datetime.datetime.now()
 
 
-def crawl():
-    project_id = 73710
+def crawl(project_id, project_name):
     url = "https://sh"+"ow.bi" + "lib" + "ili.com/api/ti" + \
         f"cket/project/get?version=134&id={project_id}&project_id={project_id}"
     headers = {
@@ -28,12 +27,12 @@ def crawl():
     r_json = r.json()
     sale_flag = r_json["data"]["sale_flag"]
     time_now = datetime.datetime.now()
-    print("====>", time_now, sale_flag)
+    print(f"{project_name} ====>", time_now, sale_flag)
     if sale_flag not in ["暂时售罄", "已售罄"]:
         action_success(r_json, time_now)
 
 
-def action_success(resp, time_now):
+def action_success(resp, time_now, project_name):
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(resp["data"]["sale_flag_number"])
     screen_list = resp["data"]["screen_list"]
@@ -48,17 +47,17 @@ def action_success(resp, time_now):
                 if ticket['clickable'] == True:
                     desc += f"{ticket['screen_name']}-{ticket['desc']}: {ticket['num']}\n"
     print(desc)
-    
+
     with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
         f.write(
-            f'{time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
+            f'{project_name} {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
         f.write(f'{desc}\n')
 
     global last_success_time
     if time_now - last_success_time > datetime.timedelta(seconds=10):
         last_success_time = time_now
         desp = f"""
-*有票啦！*
+#{project_name} *有票啦！*
 {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}
 
 {desc}
@@ -87,7 +86,8 @@ def telegram_push(text, desp):
 if __name__ == "__main__":
     while True:
         try:
-            crawl()
+            crawl("73710", "BW ")
+            crawl("73752", "BML")
             time.sleep(1 + random.random())
         except Exception as e:
             print(e)
