@@ -4,7 +4,10 @@ Another crawler for some show
 
 另一个会员购观测与 TG 推送脚本
 
-You can join the temporary push channel [https://t.me/MongoliaB](https://t.me/MongoliaB) for 2023 BW and BML ticket notice.
+~~You can join the temporary push channel @MongoliaB for 2023 BW and BML ticket notice.~~  
+
+Thank you and see you next time.
+
 
 ## Copyright
 
