@@ -15,9 +15,9 @@ last_success_time = datetime.datetime.now()
 
 def crawl(project_id, project_name):
     url = "https://sh"+"ow.bi" + "lib" + "ili.com/api/ti" + \
-        f"cket/project/get?version=134&id={project_id}&project_id={project_id}"
+        f"cket/project/getV2?version=134&id={project_id}&project_id={project_id}"
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
     }
     # proxies = {"https": "socks5://127.0.0.1:7890"}
     r = requests.get(url, headers=headers)  # proxies=proxies
@@ -28,13 +28,18 @@ def crawl(project_id, project_name):
     sale_flag = r_json["data"]["sale_flag"]
     time_now = datetime.datetime.now()
     print(f"{project_name} ====>", time_now, sale_flag)
+    # 1 未开售
+    # 2 预售中  -->  有票
+    # 4 已售罄
+    # 5 不可售
+    # 8 暂时售罄
     if sale_flag not in ["暂时售罄", "已售罄"]:
+    # if sale_flag_number not in [4, 5, 8]:
         action_success(r_json, time_now)
 
 
 def action_success(resp, time_now, project_name):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(resp["data"]["sale_flag_number"])
+    # print(resp["data"]["sale_flag_number"])
     screen_list = resp["data"]["screen_list"]
     # print(screen_list)
 
@@ -48,21 +53,25 @@ def action_success(resp, time_now, project_name):
                     desc += f"{ticket['screen_name']}-{ticket['desc']}: {ticket['num']}\n"
     print(desc)
 
-    with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
-        f.write(
-            f'{project_name} {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
-        f.write(f'{desc}\n')
+    if desc:
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(desc)
 
-    global last_success_time
-    if time_now - last_success_time > datetime.timedelta(seconds=10):
-        last_success_time = time_now
-        desp = f"""
+        with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
+            f.write(
+                f'{project_name} {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
+            f.write(f'{desc}\n')
+
+        global last_success_time
+        if time_now - last_success_time > datetime.timedelta(seconds=10):
+            last_success_time = time_now
+            desp = f"""
 #{project_name} *有票啦！*
 {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}
 
 {desc}
 """.strip()
-        telegram_push("【MongoliaB】", desp)
+            telegram_push("【MongoliaB】", desp)
 
 
 def telegram_push(text, desp):
@@ -86,9 +95,9 @@ def telegram_push(text, desp):
 if __name__ == "__main__":
     while True:
         try:
-            crawl("73710", "BW ")
-            crawl("73752", "BML")
-            time.sleep(1 + random.random())
+            crawl("85939", "BW ")
+            crawl("85938", "BML")
+            time.sleep(1.5 + random.random())
         except Exception as e:
             print(e)
             with open('bilibilishow.log', 'a+', encoding='utf-8') as f:
