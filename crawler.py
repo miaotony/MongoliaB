@@ -30,10 +30,11 @@ def crawl(project_id, project_name):
     print(f"{project_name} ====>", time_now, sale_flag)
     # 1 未开售
     # 2 预售中  -->  有票
+    # 3 已停售
     # 4 已售罄
     # 5 不可售
     # 8 暂时售罄
-    if sale_flag not in ["暂时售罄", "已售罄"]:
+    if sale_flag not in ["暂时售罄", "已售罄", "已停售"]:
     # if sale_flag_number not in [4, 5, 8]:
         action_success(r_json, time_now)
 
