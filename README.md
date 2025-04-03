@@ -19,4 +19,4 @@ License: [GNU Affero General Public License v3.0](LICENSE)
 
 The final interpretation right belongs to the developer of the project.
 
-Copyright © 2023-2024 [MiaoTony](https://github.com/miaotony)
+Copyright © 2023-2025 [MiaoTony](https://github.com/miaotony)
