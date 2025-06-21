@@ -20,7 +20,7 @@ def crawl(project_id, project_name):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
     }
     # proxies = {"https": "socks5://127.0.0.1:7890"}
-    r = requests.get(url, headers=headers)  # proxies=proxies
+    r = requests.get(url, headers=headers, timeout=5)  # proxies=proxies
     r.encoding = "utf-8"
 
     # print(r.text)
@@ -89,7 +89,7 @@ def telegram_push(text, desp):
         payload = {'chat_id': tg_chat_id,
                    'text': tmp, 'parse_mode': 'Markdown'}
         # proxies = {"https": "socks5://127.0.0.1:7890"}
-        r = requests.post(telegram_URL, data=payload)  # proxies=proxies
+        r = requests.post(telegram_URL, data=payload, timeout=5)  # proxies=proxies
         print(r.text)
 
 
