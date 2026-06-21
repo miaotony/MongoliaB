@@ -17,7 +17,7 @@ def crawl(project_id, project_name):
     url = "https://sh"+"ow.bi" + "lib" + "ili.com/api/ti" + \
         f"cket/project/getV2?version=134&id={project_id}&project_id={project_id}"
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
     }
     # proxies = {"https": "socks5://127.0.0.1:7890"}
     r = requests.get(url, headers=headers, timeout=5)  # proxies=proxies
@@ -96,8 +96,8 @@ def telegram_push(text, desp):
 if __name__ == "__main__":
     while True:
         try:
-            crawl("102194", "BW ")
-            crawl("102626", "BML")
+            crawl("1001653", "BW ")
+            crawl("1001701", "BML")
             time.sleep(1.5 + random.random())
         except Exception as e:
             print(e)
