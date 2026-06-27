@@ -10,7 +10,22 @@ import datetime
 import random
 
 
-last_success_time = datetime.datetime.now()
+NOTIFICATION_COOLDOWN_SECONDS = 10
+last_success_time = {}
+
+
+PROJECTS = [
+    ("1001653", "BW "),
+    ("1001701", "BML"),
+]
+
+
+def should_notify(project_name, time_now, cooldown_seconds=NOTIFICATION_COOLDOWN_SECONDS):
+    last_time = last_success_time.get(project_name)
+    if last_time is None or time_now - last_time > datetime.timedelta(seconds=cooldown_seconds):
+        last_success_time[project_name] = time_now
+        return True
+    return False
 
 
 def crawl(project_id, project_name):
@@ -63,9 +78,7 @@ def action_success(resp, time_now, project_name):
                 f'{project_name} {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}\n{screen_list}\n')
             f.write(f'{desc}\n')
 
-        global last_success_time
-        if time_now - last_success_time > datetime.timedelta(seconds=10):
-            last_success_time = time_now
+        if should_notify(project_name, time_now):
             desp = f"""
 #{project_name} *有票啦！*
 {time_now} {resp["data"]["sale_flag"]}, {resp["data"]["sale_flag_number"]}
@@ -96,8 +109,8 @@ def telegram_push(text, desp):
 if __name__ == "__main__":
     while True:
         try:
-            crawl("1001653", "BW ")
-            crawl("1001701", "BML")
+            for project_id, project_name in PROJECTS:
+                crawl(project_id, project_name)
             time.sleep(1.5 + random.random())
         except Exception as e:
             print(e)
